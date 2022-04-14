@@ -1,0 +1,19 @@
+{
+  "name": "simpleapisls",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.1114.0",
+    "jest": "^27.5.1"
+  },
+  "dependencies": {
+    "@shelf/jest-dynamodb": "^2.2.3"
+  }
+}

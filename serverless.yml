@@ -1,0 +1,63 @@
+
+service: SimpleApiSLS
+frameworkVersion: '3'
+
+custom:
+  TABLE_NAME: Peliculas
+  # dynamodb:
+  #   stages:
+  #       - dev
+  #   start:
+  #       port: 8000
+  #       inMemory: true
+  #       migrate: true
+  #   migration:
+  #       dir: offline/migrations
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  environment: ${self:custom}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:ListStreams"
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.TABLE_NAME}"
+
+# plugins:
+#   - serverless-dynamodb-local
+resources:
+  Resources:
+    Pelicula:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: episodio_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: episodio_id
+            KeyType: HASH
+
+functions:
+  getPelicula:
+    handler: handler.getPelicula
+    events:
+      - http:
+          method: GET
+          path: get/{ID_FILM}
+  crearPelicula:
+    handler: handler.crearPelicula
+    events:
+      - http:
+          method: POST
+          path: /crear
+
